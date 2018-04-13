@@ -30,6 +30,8 @@ declare global {
     interface WopPatternLock {
       'generateGrid': (rows: number, cols: number) => void;
       'height': number;
+      'setTheme': (theme: any) => void;
+      'start': () => void;
       'width': number;
     }
   }

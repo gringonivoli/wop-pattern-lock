@@ -11,7 +11,21 @@ export class PatternLock {
   private bound: ClientRect;
   private rows: number;
   private cols: number;
-  private interval: { x: number, y: number};
+  private interval: { x: number, y: number };
+  private isDragging: boolean;
+  private coordinates: { x: number, y: number };
+  private selectedNodes: any[];
+  private theme = {
+    accent: '#1abc9c',
+    primary: '#ffffff',
+    bg: '#2c3e50',
+    dimens: {
+      line_width: 6,
+      node_radius: 28,
+      node_core: 8,
+      node_ring: 1,
+    }
+  };
 
   @Element() el: HTMLElement;
 
@@ -31,6 +45,188 @@ export class PatternLock {
     this.renderGrid();
   }
 
+  @Method()
+  setTheme(theme) {
+    this.theme.dimens = Object.assign({}, this.theme.dimens, theme.dimens || {});
+    theme.dimens = this.theme.dimens;
+    this.theme = Object.assign({}, this.theme, theme);
+  }
+
+  @Method()
+  start() {
+    this.canvas.addEventListener('mousedown', this.mouseStartHandler.bind(this));
+    this.canvas.addEventListener('touchstart', this.mouseStartHandler.bind(this));
+    window.addEventListener('mousemove', this.mouseMoveHandler.bind(this));
+    window.addEventListener('touchmove', this.mouseMoveHandler.bind(this));
+    this.canvas.addEventListener('mouseup', this.mouseEndHandler.bind(this));
+    this.canvas.addEventListener('touchend', this.mouseEndHandler.bind(this));
+
+    requestAnimationFrame(this.renderLoop.bind(this));
+    requestAnimationFrame(this.calculationLoop.bind(this));
+  }
+
+  mouseStartHandler(e) {
+    if (e) e.preventDefault();
+
+    this.setInitialState();
+    this.calculationLoop(false);
+    this.renderLoop(false);
+    this.isDragging = true;
+  }
+
+  mouseMoveHandler(e) {
+    e.preventDefault();
+
+    if (this.isDragging) {
+      const mousePoint = {
+        x: e.pageX || e.touches[0].pageX,
+        y: e.pageY || e.touches[0].pageY,
+      };
+      mousePoint.x -= this.bound.left;
+      mousePoint.y -= this.bound.top;
+
+      if (
+        mousePoint.x <= this.width && mousePoint.x > 0 &&
+        mousePoint.y <= this.height && mousePoint.y > 0
+      ) {
+        this.coordinates = mousePoint;
+      } else {
+        this.mouseEndHandler(null);
+      }
+    }
+  }
+
+  mouseEndHandler(e) {
+    if (e) e.preventDefault();
+
+    this.coordinates = null;
+    this.renderLoop(false);
+
+    this.isDragging = false;
+
+    // if (typeof this.patternCompleteHandler === 'function') {
+    //   this.patternCompleteHandler(this.selectedNodes.slice(0));
+    // }
+  }
+
+  setInitialState() {
+    this.coordinates = null;
+    this.selectedNodes = [];
+  }
+
+  calculationLoop(runLoop: boolean | number = false) {
+    if (this.isDragging && this.coordinates) {
+      this.forEachNode((x, y) => {
+        const dist = Math.sqrt(
+          Math.pow(this.coordinates.x - x, 2) +
+          Math.pow(this.coordinates.y - y, 2)
+        );
+
+        if (dist < this.theme.dimens.node_radius + 1) {
+          const row = x / this.interval.x;
+          const col = y / this.interval.y;
+          const currentNode = { row, col };
+
+          if (!this.isSelected(currentNode)) {
+            this.selectedNodes.push(currentNode);
+            return false;
+          }
+        }
+      });
+    }
+
+    if (runLoop) {
+      requestAnimationFrame(this.calculationLoop.bind(this));
+    }
+  }
+
+  renderLoop(runLoop: boolean | number = true) {
+    if (this.isDragging) {
+      // Clear the canvas(Redundant)
+      this.ctx.clearRect(0, 0, this.width, this.height);
+      this.renderGrid();
+      // Plot all the selected nodes
+      const lastNode =
+        this.selectedNodes.reduce((prevNode, node) => {
+          if (prevNode) {
+            const point1 = { x: node.row * this.interval.x, y: node.col * this.interval.y };
+            const point2 = { x: prevNode.row * this.interval.x, y: prevNode.col * this.interval.y };
+
+            // Make the two selected nodes bigger
+            this.drawNode(
+              point1.x, point1.y,
+              this.theme.accent, this.theme.primary,
+              this.theme.dimens.node_ring + 3
+            );
+            this.drawNode(
+              point2.x, point2.y,
+              this.theme.accent, this.theme.primary,
+              this.theme.dimens.node_ring + 3
+            );
+
+            // Join the nodes
+            this.joinNodes(
+              prevNode.row, prevNode.col,
+              node.row, node.col
+            );
+          }
+
+          return node;
+        }, null);
+
+      if (lastNode && this.coordinates) {
+        // Draw the last node
+        this.drawNode(
+          lastNode.row * this.interval.x, lastNode.col * this.interval.y,
+          this.theme.accent, this.theme.primary,
+          this.theme.dimens.node_ring + 6
+        );
+
+        // Draw a line between last node to the current drag position
+        this.joinNodes(
+          lastNode.row * this.interval.x, lastNode.col * this.interval.y,
+          this.coordinates.x, this.coordinates.y,
+          true  // IsCoordinates instead of row and column position
+        );
+      }
+    }
+
+    if (runLoop) {
+      requestAnimationFrame(this.renderLoop.bind(this));
+    }
+  }
+
+  joinNodes(row1, col1, row2, col2, isCoordinates = false) {
+    let factor = this.interval;
+
+    if (isCoordinates) {
+      factor = { x: 1, y: 1 };
+    }
+
+    const point1 = { x: factor.x * row1, y: factor.y * col1 };
+    const point2 = { x: factor.x * row2, y: factor.y * col2 };
+
+    // Config
+    this.ctx.lineWidth = this.theme.dimens.line_width;
+    this.ctx.strokeStyle = this.theme.accent;
+    this.ctx.lineCap = 'round';
+
+    // Draw line
+    this.ctx.beginPath();
+    this.ctx.moveTo(point1.x, point1.y);
+    this.ctx.lineTo(point2.x, point2.y);
+    this.ctx.stroke();
+  }
+
+  isSelected(targetNode) {
+    return !!this.selectedNodes.find(
+      node => (
+        node.row == targetNode.row &&
+        node.col == targetNode.col
+      )
+    );
+  }
+
   setCanvas() {
     this.canvas = (this.el.querySelector('canvas') as HTMLCanvasElement);
     this.canvas.width = this.width;
@@ -38,7 +234,7 @@ export class PatternLock {
   }
 
   renderGrid() {
-    this.ctx.fillStyle = '#2c3e50'; // hacer configurable
+    this.ctx.fillStyle = this.theme.bg;
     this.ctx.fillRect(0, 0, this.width, this.height);
 
     this.interval = {
@@ -46,57 +242,43 @@ export class PatternLock {
       y: this.height / (this.cols + 1),
     };
 
-    console.log(this.bound);
-    console.log('interval', this.interval);
-
     this.forEachNode(this.drawNode.bind(this));
   }
 
   forEachNode(drawNode) {
-
     const xGrid = Array(this.rows).fill(this.interval.x);
     const yGrid = Array(this.cols).fill(this.interval.y);
-
     const breakException = new Error('Break Exception');
-
     try {
-
       yGrid.reduce((y, dy) => {
-
         xGrid.reduce((x, dx) => {
-
           // If the callback returns false, break out of the loop
           if (drawNode(x, y) === false)
             throw breakException;
-
           return x + dx;
-
         }, this.interval.x);
-
         return y + dy;
-
       }, this.interval.y);
-
     } catch (e) {
       if (e !== breakException) throw e;
     }
   }
 
-  drawNode(x, y, centerColor = '#ffffff', borderColor = '#ffffff', size = 1) {
+  drawNode(x, y, centerColor = this.theme.primary, borderColor = this.theme.primary, size = this.theme.dimens.node_ring) {
 
     // Config
-    this.ctx.lineWidth = size; // hacer configurable el size
+    this.ctx.lineWidth = size;
     this.ctx.fillStyle = centerColor;
     this.ctx.strokeStyle = borderColor;
 
     // Draw inner circle
     this.ctx.beginPath();
-    this.ctx.arc(x, y, 8, 0, Math.PI * 2); // hacer configurable el radio
+    this.ctx.arc(x, y, this.theme.dimens.node_core, 0, Math.PI * 2);
     this.ctx.fill();
 
     // Draw outer ring
     this.ctx.beginPath();
-    this.ctx.arc(x, y, 28, 0, Math.PI * 2); // hacer configurable el radio
+    this.ctx.arc(x, y, this.theme.dimens.node_radius, 0, Math.PI * 2);
     this.ctx.stroke();
   }
 
