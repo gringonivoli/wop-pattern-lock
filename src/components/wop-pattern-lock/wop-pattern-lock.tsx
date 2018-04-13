@@ -19,7 +19,7 @@ export class PatternLock {
   @Prop() height: number = 430;
 
   componentDidLoad() {
-    this.canvas = (this.el.querySelector('canvas') as HTMLCanvasElement);
+    this.setCanvas();
     this.ctx = this.canvas.getContext('2d');
     this.bound = this.canvas.getBoundingClientRect();
   }
@@ -29,6 +29,12 @@ export class PatternLock {
     this.rows = rows;
     this.cols = cols;
     this.renderGrid();
+  }
+
+  setCanvas() {
+    this.canvas = (this.el.querySelector('canvas') as HTMLCanvasElement);
+    this.canvas.width = this.width;
+    this.canvas.height = this.height;
   }
 
   renderGrid() {
@@ -41,19 +47,63 @@ export class PatternLock {
     };
 
     console.log(this.bound);
-    console.log(this.interval);
+    console.log('interval', this.interval);
 
-    // Draw all the nodes
-    //this.forEachNode(this.drawNode.bind(this));
+    this.forEachNode(this.drawNode.bind(this));
+  }
+
+  forEachNode(drawNode) {
+
+    const xGrid = Array(this.rows).fill(this.interval.x);
+    const yGrid = Array(this.cols).fill(this.interval.y);
+
+    const breakException = new Error('Break Exception');
+
+    try {
+
+      yGrid.reduce((y, dy) => {
+
+        xGrid.reduce((x, dx) => {
+
+          // If the callback returns false, break out of the loop
+          if (drawNode(x, y) === false)
+            throw breakException;
+
+          return x + dx;
+
+        }, this.interval.x);
+
+        return y + dy;
+
+      }, this.interval.y);
+
+    } catch (e) {
+      if (e !== breakException) throw e;
+    }
+  }
+
+  drawNode(x, y, centerColor = '#ffffff', borderColor = '#ffffff', size = 1) {
+
+    // Config
+    this.ctx.lineWidth = size; // hacer configurable el size
+    this.ctx.fillStyle = centerColor;
+    this.ctx.strokeStyle = borderColor;
+
+    // Draw inner circle
+    this.ctx.beginPath();
+    this.ctx.arc(x, y, 8, 0, Math.PI * 2); // hacer configurable el radio
+    this.ctx.fill();
+
+    // Draw outer ring
+    this.ctx.beginPath();
+    this.ctx.arc(x, y, 28, 0, Math.PI * 2); // hacer configurable el radio
+    this.ctx.stroke();
   }
 
   render() {
     return (
       <div>
-        <canvas style={{
-          height: this.height ? this.height + 'px' : '430px',
-          width: this.width ? this.width + 'px' : '300px'
-        }}></canvas>
+        <canvas></canvas>
       </div>
     );
   }
