@@ -27,33 +27,34 @@ declare global {
 declare global {
 
   namespace StencilComponents {
-    interface MyComponent {
-      'first': string;
-      'last': string;
+    interface WopPatternLock {
+      'generateGrid': (rows: number, cols: number) => void;
+      'height': number;
+      'width': number;
     }
   }
 
-  interface HTMLMyComponentElement extends StencilComponents.MyComponent, HTMLStencilElement {}
+  interface HTMLWopPatternLockElement extends StencilComponents.WopPatternLock, HTMLStencilElement {}
 
-  var HTMLMyComponentElement: {
-    prototype: HTMLMyComponentElement;
-    new (): HTMLMyComponentElement;
+  var HTMLWopPatternLockElement: {
+    prototype: HTMLWopPatternLockElement;
+    new (): HTMLWopPatternLockElement;
   };
   interface HTMLElementTagNameMap {
-    'my-component': HTMLMyComponentElement;
+    'wop-pattern-lock': HTMLWopPatternLockElement;
   }
   interface ElementTagNameMap {
-    'my-component': HTMLMyComponentElement;
+    'wop-pattern-lock': HTMLWopPatternLockElement;
   }
   namespace JSX {
     interface IntrinsicElements {
-      'my-component': JSXElements.MyComponentAttributes;
+      'wop-pattern-lock': JSXElements.WopPatternLockAttributes;
     }
   }
   namespace JSXElements {
-    export interface MyComponentAttributes extends HTMLAttributes {
-      'first'?: string;
-      'last'?: string;
+    export interface WopPatternLockAttributes extends HTMLAttributes {
+      'height'?: number;
+      'width'?: number;
     }
   }
 }

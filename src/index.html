@@ -4,12 +4,18 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
   <title>Stencil Component Starter</title>
-  <script src="/build/mycomponent.js"></script>
+  <script src="/build/woppatternlock.js"></script>
 
 </head>
 <body>
 
-  <my-component first="Stencil" last="'Don't call me a framework' JS"></my-component>
+  <wop-pattern-lock></wop-pattern-lock>
 
+  <script>
+    window.onload = () => {
+      const wpl = document.querySelector('wop-pattern-lock');
+      wpl.generateGrid(3, 3);
+    };
+  </script>
 </body>
 </html>
