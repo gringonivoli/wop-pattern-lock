@@ -56,6 +56,7 @@ declare global {
   namespace JSXElements {
     export interface WopPatternLockAttributes extends HTMLAttributes {
       'height'?: number;
+      'onPatternCompleted'?: (event: CustomEvent) => void;
       'width'?: number;
     }
   }

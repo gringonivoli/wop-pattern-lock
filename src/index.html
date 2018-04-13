@@ -16,6 +16,7 @@
       const wpl = document.querySelector('wop-pattern-lock');
       wpl.generateGrid(3, 3);
       wpl.start();
+      document.addEventListener('patternCompleted', (e) => console.log(e.detail));
     };
   </script>
 </body>

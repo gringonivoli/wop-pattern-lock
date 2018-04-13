@@ -1,4 +1,4 @@
-import { Component, Prop, Method, Element } from '@stencil/core';
+import { Component, Prop, Method, Element, Event, EventEmitter } from '@stencil/core';
 
 @Component({
   tag: 'wop-pattern-lock',
@@ -31,6 +31,8 @@ export class PatternLock {
 
   @Prop() width: number = 300;
   @Prop() height: number = 430;
+
+  @Event() patternCompleted: EventEmitter;
 
   componentDidLoad() {
     this.setCanvas();
@@ -101,12 +103,8 @@ export class PatternLock {
 
     this.coordinates = null;
     this.renderLoop(false);
-
     this.isDragging = false;
-
-    // if (typeof this.patternCompleteHandler === 'function') {
-    //   this.patternCompleteHandler(this.selectedNodes.slice(0));
-    // }
+    this.patternCompleted.emit(this.selectedNodes.slice(0));
   }
 
   setInitialState() {
