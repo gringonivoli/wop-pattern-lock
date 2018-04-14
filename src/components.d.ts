@@ -33,8 +33,11 @@ declare global {
     interface WopPatternLock {
       'generateGrid': (rows: number, cols: number) => void;
       'height': number;
+      'intervalTime': number;
+      'playPattern': (nodes: any[]) => void;
       'setTheme': (theme: Theme) => void;
       'start': () => void;
+      'stopPattern': () => void;
       'width': number;
     }
   }
@@ -59,6 +62,7 @@ declare global {
   namespace JSXElements {
     export interface WopPatternLockAttributes extends HTMLAttributes {
       'height'?: number;
+      'intervalTime'?: number;
       'onPatternCompleted'?: (event: CustomEvent) => void;
       'width'?: number;
     }

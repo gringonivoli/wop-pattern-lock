@@ -18,11 +18,13 @@ export class PatternLock {
   private coordinates: CoordinatesXY;
   private selectedNodes: any[];
   private theme: Theme = DEFAULT_THEME;
+  private playPatternInterval: number;
 
   @Element() el: HTMLElement;
 
   @Prop() width: number = 300;
   @Prop() height: number = 430;
+  @Prop() intervalTime: number = 800;
 
   @Event() patternCompleted: EventEmitter;
 
@@ -41,12 +43,9 @@ export class PatternLock {
 
   @Method()
   setTheme(theme: Theme) {
-    console.log(theme);
     this.theme.dimens = Object.assign({}, this.theme.dimens, theme.dimens || {});
-    console.log(this.theme);
     theme.dimens = this.theme.dimens;
     this.theme = Object.assign({}, this.theme, theme);
-    console.log(this.theme);
   }
 
   @Method()
@@ -62,7 +61,40 @@ export class PatternLock {
     requestAnimationFrame(this.calculationLoop.bind(this));
   }
 
+  @Method()
+  playPattern(nodes: any[]) {
+    this.setInitialState();
+    if (!this.playPatternInterval) {
+      this.playPatternInterval = window.setInterval(() => {
+        if (nodes.length) {
+          this.selectedNodes.push(nodes.shift());
+          this.calculationLoop(false);
+          this.renderLoop(false);
+          this.isDragging = true;
+        } else {
+          nodes = this.selectedNodes.slice(0);
+          this.isDragging = false;
+          this.setInitialState();
+        }
+      }, this.intervalTime);
+    }
+  }
+
+  @Method()
+  stopPattern() {
+    window.clearInterval(this.playPatternInterval);
+    this.setInitialState();
+    this.clearCanvas();
+    this.playPatternInterval = null;
+  }
+
+  private clearCanvas() {
+    this.ctx.clearRect(0, 0, this.width, this.height);
+    this.renderGrid();
+  }
+
   mouseStartHandler(e) {
+    this.stopPattern();
     if (e) e.preventDefault();
 
     this.setInitialState();
@@ -99,7 +131,13 @@ export class PatternLock {
     this.coordinates = null;
     this.renderLoop(false);
     this.isDragging = false;
-    this.patternCompleted.emit(this.selectedNodes.slice(0));
+    this.patternCompletedHandler();
+  }
+
+  patternCompletedHandler() {
+    if (!this.playPatternInterval) {
+      this.patternCompleted.emit(this.selectedNodes.slice(0));
+    }
   }
 
   setInitialState() {
@@ -135,9 +173,7 @@ export class PatternLock {
 
   renderLoop(runLoop: boolean | number = true) {
     if (this.isDragging) {
-      // Clear the canvas(Redundant)
-      this.ctx.clearRect(0, 0, this.width, this.height);
-      this.renderGrid();
+      this.clearCanvas();
       // Plot all the selected nodes
       const lastNode =
         this.selectedNodes.reduce((prevNode, node) => {

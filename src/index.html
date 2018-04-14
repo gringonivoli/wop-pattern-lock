@@ -10,7 +10,8 @@
 <body>
 
   <wop-pattern-lock></wop-pattern-lock>
-
+  <button type="button" id="play">Play</button>
+  <button type="button" id="stop">Stop</button>
   <script>
     window.onload = () => {
       const wpl = document.querySelector('wop-pattern-lock');
@@ -20,6 +21,14 @@
       wpl.generateGrid(3, 3);
       wpl.start();
       document.addEventListener('patternCompleted', (e) => console.log(e.detail));
+
+      document.querySelector('#play').addEventListener('click', () => {
+        wpl.playPattern([{ row: 1, col: 1 }, { row: 1, col: 2 }, { row: 1, col: 3 }]);
+      });
+
+      document.querySelector('#stop').addEventListener('click', () => {
+        wpl.stopPattern();
+      });
     };
   </script>
 </body>
