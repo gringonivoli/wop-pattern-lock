@@ -83,13 +83,13 @@ export class PatternLock {
   }
 
   @Method()
-  stopPattern(emit: boolean = true) {
-    window.clearInterval(this.playPatternInterval);
-    this.setInitialState();
-    this.clearCanvas();
-    this.playPatternInterval = null;
-    if (emit) {
+  stopPattern() {
+    if (this.playPatternInterval) {
+      window.clearInterval(this.playPatternInterval);
+      this.setInitialState();
+      this.clearCanvas();
       this.patternPlayed.emit(false);
+      this.playPatternInterval = null;
     }
   }
 
@@ -99,7 +99,7 @@ export class PatternLock {
   }
 
   mouseStartHandler(e) {
-    this.stopPattern(false);
+    this.stopPattern();
     if (e) e.preventDefault();
 
     this.setInitialState();

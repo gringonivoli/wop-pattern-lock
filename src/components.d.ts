@@ -37,7 +37,7 @@ declare global {
       'playPattern': (nodes: any[]) => void;
       'setTheme': (theme: Theme) => void;
       'start': () => void;
-      'stopPattern': (emit?: boolean) => void;
+      'stopPattern': () => void;
       'width': number;
     }
   }
