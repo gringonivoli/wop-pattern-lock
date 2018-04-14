@@ -174,14 +174,12 @@ export class PatternLock {
   renderLoop(runLoop: boolean | number = true) {
     if (this.isDragging) {
       this.clearCanvas();
-      // Plot all the selected nodes
       const lastNode =
         this.selectedNodes.reduce((prevNode, node) => {
           if (prevNode) {
             const point1: CoordinatesXY = { x: node.row * this.interval.x, y: node.col * this.interval.y };
             const point2: CoordinatesXY = { x: prevNode.row * this.interval.x, y: prevNode.col * this.interval.y };
 
-            // Make the two selected nodes bigger
             this.drawNode(
               point1.x, point1.y,
               this.theme.accent, this.theme.primary,
@@ -193,7 +191,6 @@ export class PatternLock {
               this.theme.dimens.nodeRing + 3
             );
 
-            // Join the nodes
             this.joinNodes(
               prevNode.row, prevNode.col,
               node.row, node.col
@@ -204,14 +201,12 @@ export class PatternLock {
         }, null);
 
       if (lastNode && this.coordinates) {
-        // Draw the last node
         this.drawNode(
           lastNode.row * this.interval.x, lastNode.col * this.interval.y,
           this.theme.accent, this.theme.primary,
           this.theme.dimens.nodeRing + 6
         );
 
-        // Draw a line between last node to the current drag position
         this.joinNodes(
           lastNode.row * this.interval.x, lastNode.col * this.interval.y,
           this.coordinates.x, this.coordinates.y,
@@ -234,13 +229,9 @@ export class PatternLock {
 
     const point1: CoordinatesXY = { x: factor.x * row1, y: factor.y * col1 };
     const point2: CoordinatesXY = { x: factor.x * row2, y: factor.y * col2 };
-
-    // Config
     this.ctx.lineWidth = this.theme.dimens.lineWidth;
     this.ctx.strokeStyle = this.theme.accent;
     this.ctx.lineCap = 'round';
-
-    // Draw line
     this.ctx.beginPath();
     this.ctx.moveTo(point1.x, point1.y);
     this.ctx.lineTo(point2.x, point2.y);
@@ -281,7 +272,6 @@ export class PatternLock {
     try {
       yGrid.reduce((y, dy) => {
         xGrid.reduce((x, dx) => {
-          // If the callback returns false, break out of the loop
           if (drawNode(x, y) === false)
             throw breakException;
           return x + dx;
@@ -294,18 +284,12 @@ export class PatternLock {
   }
 
   drawNode(x, y, centerColor = this.theme.primary, borderColor = this.theme.primary, size = this.theme.dimens.nodeRing) {
-
-    // Config
     this.ctx.lineWidth = size;
     this.ctx.fillStyle = centerColor;
     this.ctx.strokeStyle = borderColor;
-
-    // Draw inner circle
     this.ctx.beginPath();
     this.ctx.arc(x, y, this.theme.dimens.nodeCore, 0, Math.PI * 2);
     this.ctx.fill();
-
-    // Draw outer ring
     this.ctx.beginPath();
     this.ctx.arc(x, y, this.theme.dimens.nodeRadius, 0, Math.PI * 2);
     this.ctx.stroke();
