@@ -140,7 +140,7 @@ export class PatternLock {
   }
 
   patternCompletedHandler() {
-    if (!this.playPatternInterval) {
+    if (!this.playPatternInterval && this.selectedNodes.length) {
       this.patternCompleted.emit(this.selectedNodes.slice(0));
     }
   }
