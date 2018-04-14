@@ -64,8 +64,8 @@ export class PatternLock {
 
   @Method()
   playPattern(nodes: any[]) {
-    this.setInitialState();
     if (!this.playPatternInterval) {
+      this.setInitialState();
       this.patternPlayed.emit(true);
       this.playPatternInterval = window.setInterval(() => {
         if (nodes.length) {
