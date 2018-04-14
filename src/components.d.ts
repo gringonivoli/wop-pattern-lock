@@ -23,6 +23,9 @@ declare global {
   interface HTMLAttributes {}
 }
 
+import {
+  Theme,
+} from './global/interfaces';
 
 declare global {
 
@@ -30,7 +33,7 @@ declare global {
     interface WopPatternLock {
       'generateGrid': (rows: number, cols: number) => void;
       'height': number;
-      'setTheme': (theme: any) => void;
+      'setTheme': (theme: Theme) => void;
       'start': () => void;
       'width': number;
     }

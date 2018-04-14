@@ -1,4 +1,6 @@
 import { Component, Prop, Method, Element, Event, EventEmitter } from '@stencil/core';
+import { CoordinatesXY, Theme } from '../../global/interfaces';
+import { DEFAULT_THEME } from '../../global/utils';
 
 @Component({
   tag: 'wop-pattern-lock',
@@ -11,21 +13,11 @@ export class PatternLock {
   private bound: ClientRect;
   private rows: number;
   private cols: number;
-  private interval: { x: number, y: number };
+  private interval: CoordinatesXY;
   private isDragging: boolean;
-  private coordinates: { x: number, y: number };
+  private coordinates: CoordinatesXY;
   private selectedNodes: any[];
-  private theme = {
-    accent: '#1abc9c',
-    primary: '#ffffff',
-    bg: '#2c3e50',
-    dimens: {
-      line_width: 6,
-      node_radius: 28,
-      node_core: 8,
-      node_ring: 1,
-    }
-  };
+  private theme: Theme = DEFAULT_THEME;
 
   @Element() el: HTMLElement;
 
@@ -48,10 +40,13 @@ export class PatternLock {
   }
 
   @Method()
-  setTheme(theme) {
+  setTheme(theme: Theme) {
+    console.log(theme);
     this.theme.dimens = Object.assign({}, this.theme.dimens, theme.dimens || {});
+    console.log(this.theme);
     theme.dimens = this.theme.dimens;
     this.theme = Object.assign({}, this.theme, theme);
+    console.log(this.theme);
   }
 
   @Method()
@@ -120,7 +115,7 @@ export class PatternLock {
           Math.pow(this.coordinates.y - y, 2)
         );
 
-        if (dist < this.theme.dimens.node_radius + 1) {
+        if (dist < this.theme.dimens.nodeRadius + 1) {
           const row = x / this.interval.x;
           const col = y / this.interval.y;
           const currentNode = { row, col };
@@ -147,19 +142,19 @@ export class PatternLock {
       const lastNode =
         this.selectedNodes.reduce((prevNode, node) => {
           if (prevNode) {
-            const point1 = { x: node.row * this.interval.x, y: node.col * this.interval.y };
-            const point2 = { x: prevNode.row * this.interval.x, y: prevNode.col * this.interval.y };
+            const point1: CoordinatesXY = { x: node.row * this.interval.x, y: node.col * this.interval.y };
+            const point2: CoordinatesXY = { x: prevNode.row * this.interval.x, y: prevNode.col * this.interval.y };
 
             // Make the two selected nodes bigger
             this.drawNode(
               point1.x, point1.y,
               this.theme.accent, this.theme.primary,
-              this.theme.dimens.node_ring + 3
+              this.theme.dimens.nodeRing + 3
             );
             this.drawNode(
               point2.x, point2.y,
               this.theme.accent, this.theme.primary,
-              this.theme.dimens.node_ring + 3
+              this.theme.dimens.nodeRing + 3
             );
 
             // Join the nodes
@@ -177,7 +172,7 @@ export class PatternLock {
         this.drawNode(
           lastNode.row * this.interval.x, lastNode.col * this.interval.y,
           this.theme.accent, this.theme.primary,
-          this.theme.dimens.node_ring + 6
+          this.theme.dimens.nodeRing + 6
         );
 
         // Draw a line between last node to the current drag position
@@ -201,11 +196,11 @@ export class PatternLock {
       factor = { x: 1, y: 1 };
     }
 
-    const point1 = { x: factor.x * row1, y: factor.y * col1 };
-    const point2 = { x: factor.x * row2, y: factor.y * col2 };
+    const point1: CoordinatesXY = { x: factor.x * row1, y: factor.y * col1 };
+    const point2: CoordinatesXY = { x: factor.x * row2, y: factor.y * col2 };
 
     // Config
-    this.ctx.lineWidth = this.theme.dimens.line_width;
+    this.ctx.lineWidth = this.theme.dimens.lineWidth;
     this.ctx.strokeStyle = this.theme.accent;
     this.ctx.lineCap = 'round';
 
@@ -262,7 +257,7 @@ export class PatternLock {
     }
   }
 
-  drawNode(x, y, centerColor = this.theme.primary, borderColor = this.theme.primary, size = this.theme.dimens.node_ring) {
+  drawNode(x, y, centerColor = this.theme.primary, borderColor = this.theme.primary, size = this.theme.dimens.nodeRing) {
 
     // Config
     this.ctx.lineWidth = size;
@@ -271,12 +266,12 @@ export class PatternLock {
 
     // Draw inner circle
     this.ctx.beginPath();
-    this.ctx.arc(x, y, this.theme.dimens.node_core, 0, Math.PI * 2);
+    this.ctx.arc(x, y, this.theme.dimens.nodeCore, 0, Math.PI * 2);
     this.ctx.fill();
 
     // Draw outer ring
     this.ctx.beginPath();
-    this.ctx.arc(x, y, this.theme.dimens.node_radius, 0, Math.PI * 2);
+    this.ctx.arc(x, y, this.theme.dimens.nodeRadius, 0, Math.PI * 2);
     this.ctx.stroke();
   }
 

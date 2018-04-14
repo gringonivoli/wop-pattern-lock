@@ -14,6 +14,9 @@
   <script>
     window.onload = () => {
       const wpl = document.querySelector('wop-pattern-lock');
+      wpl.setTheme({
+        bg: '#212121'
+      })
       wpl.generateGrid(3, 3);
       wpl.start();
       document.addEventListener('patternCompleted', (e) => console.log(e.detail));
