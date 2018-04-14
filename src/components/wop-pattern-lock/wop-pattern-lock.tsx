@@ -26,7 +26,7 @@ export class PatternLock {
   @Prop() height: number = 430;
   @Prop() intervalTime: number = 800;
 
-  @Event() patternCompleted: EventEmitter;
+  @Event({ eventName: 'patternLock:patternCompleted' }) patternCompleted: EventEmitter;
 
   componentDidLoad() {
     this.setCanvas();

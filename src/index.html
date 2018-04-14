@@ -20,10 +20,18 @@
       })
       wpl.generateGrid(3, 3);
       wpl.start();
-      document.addEventListener('patternCompleted', (e) => console.log(e.detail));
+      document.addEventListener('patternLock:patternCompleted', (e) => console.log(e.detail));
 
       document.querySelector('#play').addEventListener('click', () => {
-        wpl.playPattern([{ row: 1, col: 1 }, { row: 1, col: 2 }, { row: 1, col: 3 }]);
+        wpl.playPattern([
+          { row: 1, col: 3 },
+          { row: 1, col: 2 },
+          { row: 1, col: 1 },
+          { row: 2, col: 2 },
+          { row: 3, col: 1 },
+          { row: 3, col: 2 },
+          { row: 3, col: 3 }
+        ]);
       });
 
       document.querySelector('#stop').addEventListener('click', () => {

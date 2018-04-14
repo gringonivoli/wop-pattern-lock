@@ -63,7 +63,7 @@ declare global {
     export interface WopPatternLockAttributes extends HTMLAttributes {
       'height'?: number;
       'intervalTime'?: number;
-      'onPatternCompleted'?: (event: CustomEvent) => void;
+      'onPatternLock:patternCompleted'?: (event: CustomEvent) => void;
       'width'?: number;
     }
   }
