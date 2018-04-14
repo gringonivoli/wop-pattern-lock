@@ -27,6 +27,7 @@ export class PatternLock {
   @Prop() intervalTime: number = 800;
 
   @Event({ eventName: 'patternLock:patternCompleted' }) patternCompleted: EventEmitter;
+  @Event({ eventName: 'patternLock:patternPlayed' }) patternPlayed: EventEmitter;
 
   componentDidLoad() {
     this.setCanvas();
@@ -65,6 +66,7 @@ export class PatternLock {
   playPattern(nodes: any[]) {
     this.setInitialState();
     if (!this.playPatternInterval) {
+      this.patternPlayed.emit(true);
       this.playPatternInterval = window.setInterval(() => {
         if (nodes.length) {
           this.selectedNodes.push(nodes.shift());
@@ -81,11 +83,14 @@ export class PatternLock {
   }
 
   @Method()
-  stopPattern() {
+  stopPattern(emit: boolean = true) {
     window.clearInterval(this.playPatternInterval);
     this.setInitialState();
     this.clearCanvas();
     this.playPatternInterval = null;
+    if (emit) {
+      this.patternPlayed.emit(false);
+    }
   }
 
   private clearCanvas() {
@@ -94,7 +99,7 @@ export class PatternLock {
   }
 
   mouseStartHandler(e) {
-    this.stopPattern();
+    this.stopPattern(false);
     if (e) e.preventDefault();
 
     this.setInitialState();

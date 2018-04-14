@@ -37,7 +37,7 @@ declare global {
       'playPattern': (nodes: any[]) => void;
       'setTheme': (theme: Theme) => void;
       'start': () => void;
-      'stopPattern': () => void;
+      'stopPattern': (emit?: boolean) => void;
       'width': number;
     }
   }
@@ -64,6 +64,7 @@ declare global {
       'height'?: number;
       'intervalTime'?: number;
       'onPatternLock:patternCompleted'?: (event: CustomEvent) => void;
+      'onPatternLock:patternPlayed'?: (event: CustomEvent) => void;
       'width'?: number;
     }
   }

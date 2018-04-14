@@ -21,6 +21,7 @@
       wpl.generateGrid(3, 3);
       wpl.start();
       document.addEventListener('patternLock:patternCompleted', (e) => console.log(e.detail));
+      document.addEventListener('patternLock:patternPlayed', (e) => console.log('Pattern is Played?: ', e.detail));
 
       document.querySelector('#play').addEventListener('click', () => {
         wpl.playPattern([
