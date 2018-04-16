@@ -51,15 +51,15 @@ export class PatternLock {
 
   @Method()
   start() {
-    this.canvas.addEventListener('mousedown', this.mouseStartHandler.bind(this));
-    this.canvas.addEventListener('touchstart', this.mouseStartHandler.bind(this));
-    window.addEventListener('mousemove', this.mouseMoveHandler.bind(this));
-    window.addEventListener('touchmove', this.mouseMoveHandler.bind(this));
-    this.canvas.addEventListener('mouseup', this.mouseEndHandler.bind(this));
-    this.canvas.addEventListener('touchend', this.mouseEndHandler.bind(this));
+    this.canvas.addEventListener('mousedown', (e) => this.mouseStartHandler(e));
+    this.canvas.addEventListener('touchstart', (e) => this.mouseStartHandler(e));
+    window.addEventListener('mousemove', (e) => this.mouseMoveHandler(e));
+    window.addEventListener('touchmove', (e) => this.mouseMoveHandler(e));
+    this.canvas.addEventListener('mouseup', (e) => this.mouseEndHandler(e));
+    this.canvas.addEventListener('touchend', (e) => this.mouseEndHandler(e));
 
-    requestAnimationFrame(this.renderLoop.bind(this));
-    requestAnimationFrame(this.calculationLoop.bind(this));
+    requestAnimationFrame((t) => this.renderLoop(t));
+    requestAnimationFrame((t) => this.calculationLoop(t));
   }
 
   @Method()
@@ -172,7 +172,7 @@ export class PatternLock {
     }
 
     if (runLoop) {
-      requestAnimationFrame(this.calculationLoop.bind(this));
+      requestAnimationFrame((t) => this.calculationLoop(t));
     }
   }
 
@@ -221,7 +221,7 @@ export class PatternLock {
     }
 
     if (runLoop) {
-      requestAnimationFrame(this.renderLoop.bind(this));
+      requestAnimationFrame((t) => this.renderLoop(t));
     }
   }
 
@@ -267,7 +267,7 @@ export class PatternLock {
       y: this.height / (this.cols + 1),
     };
 
-    this.forEachNode(this.drawNode.bind(this));
+    this.forEachNode((x, y) => this.drawNode(x, y));
   }
 
   forEachNode(drawNode) {
