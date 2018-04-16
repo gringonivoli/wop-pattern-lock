@@ -3,8 +3,7 @@ import { CoordinatesXY, Theme, PatternNode } from '../../global/interfaces';
 import { DEFAULT_THEME } from '../../global/utils';
 
 @Component({
-  tag: 'wop-pattern-lock',
-  styleUrl: 'wop-pattern-lock.css'
+  tag: 'wop-pattern-lock'
 })
 export class PatternLock {
 
