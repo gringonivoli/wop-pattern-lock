@@ -1,5 +1,5 @@
 import { Component, Prop, Method, Element, Event, EventEmitter } from '@stencil/core';
-import { CoordinatesXY, Theme } from '../../global/interfaces';
+import { CoordinatesXY, Theme, PatternNode } from '../../global/interfaces';
 import { DEFAULT_THEME } from '../../global/utils';
 
 @Component({
@@ -16,7 +16,7 @@ export class PatternLock {
   private interval: CoordinatesXY;
   private isDragging: boolean;
   private coordinates: CoordinatesXY;
-  private selectedNodes: any[];
+  private selectedNodes: PatternNode[];
   private theme: Theme = DEFAULT_THEME;
   private playPatternInterval: number;
 
@@ -161,7 +161,7 @@ export class PatternLock {
         if (dist < this.theme.dimens.nodeRadius + 1) {
           const row = x / this.interval.x;
           const col = y / this.interval.y;
-          const currentNode = { row, col };
+          const currentNode: PatternNode = { row, col };
 
           if (!this.isSelected(currentNode)) {
             this.selectedNodes.push(currentNode);

@@ -16,3 +16,8 @@ export interface CoordinatesXY {
   x: number,
   y: number
 }
+
+export interface PatternNode {
+  row: number,
+  col: number
+}
