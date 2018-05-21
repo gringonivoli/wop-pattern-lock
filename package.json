@@ -1,25 +1,24 @@
 {
-  "name": "wop-pattern-lock",
+  "name": "my-component",
   "version": "0.0.1",
   "description": "Stencil Component Starter",
-  "main": "dist/woppatternlock.js",
+  "module": "dist/esm/index.js",
+  "main": "dist/index.js",
   "types": "dist/types/components.d.ts",
   "collection": "dist/collection/collection-manifest.json",
-  "files": [
-    "dist/"
-  ],
-  "browser": "dist/woppatternlock.js",
+  "files": ["dist/"],
   "scripts": {
     "build": "stencil build",
-    "dev": "sd concurrent \"stencil build --dev --watch\" \"stencil-dev-server\" ",
+    "dev":
+      "sd concurrent \"stencil build --dev --watch\" \"stencil-dev-server\" ",
     "serve": "stencil-dev-server",
     "start": "npm run dev",
-    "test": "jest --no-cache",
-    "test.watch": "jest --watch --no-cache"
+    "test": "jest",
+    "test.watch": "jest --watch"
   },
   "dependencies": {},
   "devDependencies": {
-    "@stencil/core": "^0.7.23",
+    "@stencil/core": "^0.9.2",
     "@stencil/dev-server": "latest",
     "@stencil/utils": "latest",
     "@types/jest": "^21.1.1",
@@ -37,15 +36,10 @@
   "homepage": "https://github.com/gringonivoli/wop-pattern-lock",
   "jest": {
     "transform": {
-      "^.+\\.(ts|tsx)$": "<rootDir>/node_modules/@stencil/core/testing/jest.preprocessor.js"
+      "^.+\\.(ts|tsx)$":
+        "<rootDir>/node_modules/@stencil/core/testing/jest.preprocessor.js"
     },
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(tsx?|jsx?)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "json",
-      "jsx"
-    ]
+    "moduleFileExtensions": ["ts", "tsx", "js", "json", "jsx"]
   }
 }
