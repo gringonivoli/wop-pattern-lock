@@ -25,11 +25,11 @@ npm start
 
 ### Script tag
 
-- Put this script tag `<script src="https://unpkg.com/wop-pattern-lock@0.0.1/dist/index.js"></script>` in the head of your index.html
+- Put this script tag `<script src="https://unpkg.com/wop-pattern-lock@0.0.2/dist/woppatternlock.js"></script>` in the head of your index.html
 
 ### Node Modules
 - Run `npm install wop-pattern-lock --save`
-- Put a script tag similar to this `<script src='node_modules/wop-pattern-lock/dist/index.js'></script>` in the head of your index.html
+- Put a script tag similar to this `<script src='node_modules/wop-pattern-lock/dist/woppatternlock.js'></script>` in the head of your index.html
 
 ### In a stencil-starter app
 - Run `npm install wop-pattern-lock --save`
