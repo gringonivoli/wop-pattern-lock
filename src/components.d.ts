@@ -13,9 +13,12 @@ declare global {
   }
   namespace JSXElements {}
 
+  interface HTMLElement {
+    componentOnReady?: () => Promise<this | null>;
+  }
+
   interface HTMLStencilElement extends HTMLElement {
     componentOnReady(): Promise<this>;
-    componentOnReady(done: (ele?: this) => void): void;
 
     forceUpdate(): void;
   }
@@ -35,6 +38,7 @@ declare global {
       'height': number;
       'intervalTime': number;
       'playPattern': (nodes: any[]) => void;
+      'resetPattern': () => void;
       'setTheme': (theme: Theme) => void;
       'start': () => void;
       'stopPattern': () => void;

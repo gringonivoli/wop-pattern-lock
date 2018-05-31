@@ -12,6 +12,7 @@
   <wop-pattern-lock></wop-pattern-lock>
   <button type="button" id="play">Play</button>
   <button type="button" id="stop">Stop</button>
+  <button type="button" id="reset">Reset</button>
   <script>
     window.onload = () => {
       const wpl = document.querySelector('wop-pattern-lock');
@@ -22,7 +23,9 @@
       wpl.start();
       document.addEventListener('patternLock:patternCompleted', (e) => console.log(e.detail));
       document.addEventListener('patternLock:patternPlayed', (e) => console.log('Pattern is Played?: ', e.detail));
-
+      document.querySelector('#reset').addEventListener('click', () => {
+        wpl.resetPattern();
+      });
       document.querySelector('#play').addEventListener('click', () => {
         wpl.playPattern([
           { row: 1, col: 1 },

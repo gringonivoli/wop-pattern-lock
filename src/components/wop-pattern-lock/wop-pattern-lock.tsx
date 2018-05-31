@@ -92,6 +92,13 @@ export class PatternLock {
     }
   }
 
+  @Method()
+  resetPattern() {
+    this.stopPattern();
+    this.setInitialState();
+    this.clearCanvas();
+  }
+
   private clearCanvas() {
     this.ctx.clearRect(0, 0, this.width, this.height);
     this.renderGrid();
