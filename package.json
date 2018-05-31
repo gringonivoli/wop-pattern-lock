@@ -1,6 +1,6 @@
 {
   "name": "wop-pattern-lock",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Web Component built with Stencil.",
   "module": "dist/esm/index.js",
   "main": "dist/index.js",
