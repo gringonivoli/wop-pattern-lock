@@ -25,7 +25,7 @@ npm start
 
 ### Script tag
 
-- Put this script tag `<script src="https://unpkg.com/wop-pattern-lock@0.0.5/dist/woppatternlock.js"></script>` in the head of your index.html
+- Put this script tag `<script src="https://unpkg.com/wop-pattern-lock@0.0.6/dist/woppatternlock.js"></script>` in the head of your index.html
 
 ### Node Modules
 - Run `npm install wop-pattern-lock --save`
