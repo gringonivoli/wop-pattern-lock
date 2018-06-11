@@ -31,7 +31,6 @@ export class PatternLock {
   componentDidLoad() {
     this.setCanvas();
     this.ctx = this.canvas.getContext('2d');
-    this.bound = this.canvas.getBoundingClientRect();
   }
 
   @Method()
@@ -116,7 +115,7 @@ export class PatternLock {
 
   mouseMoveHandler(e) {
     e.preventDefault();
-
+    this.bound = this.canvas.getBoundingClientRect();
     if (this.isDragging) {
       const mousePoint = {
         x: e.pageX || e.touches[0].pageX,
