@@ -118,8 +118,8 @@ export class PatternLock {
     this.bound = this.canvas.getBoundingClientRect();
     if (this.isDragging) {
       const mousePoint = {
-        x: e.pageX || e.touches[0].pageX,
-        y: e.pageY || e.touches[0].pageY,
+        x: e.clientX || e.touches[0].clientX,
+        y: e.clientY || e.touches[0].clientY,
       };
       mousePoint.x -= this.bound.left;
       mousePoint.y -= this.bound.top;
